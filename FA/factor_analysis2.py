@@ -87,17 +87,55 @@ expert_features["book_discussions"] = expert_features["book_discussions"].map(
 expert_features["short_videos"] = expert_features["short_videos"].map(
     videos_map)
 
-# reverse coding
+# инверсия
 reverse_cols = [
     "social_media",
     "short_videos",
 ]
-expert_features = expert_features.dropna(how='all')  # удаление пропусков
+expert_features = expert_features.dropna(how='all')  # удаление пустых строк
 expert_features[reverse_cols] = 6 - expert_features[reverse_cols]
-expert_features = expert_features.fillna(
-    expert_features.mean()
-)
+expert_features = expert_features.fillna(expert_features.mean())#замена пустот
 expert_features.to_excel("tables/expert_features.xlsx")
 
+#====================================== Проверка пригодности ================
+# ------------------------------------------------критерий Бартлетта
+hi_square_value, p_value = calculate_bartlett_sphericity(expert_features)
+
+# -------------------------------------------------КМО
+kmo_all, kmo_model = calculate_kmo(expert_features)
+
+#====================================== Факторный анализ ===================
+# создаем модель без ограничения числа факторов
+fa = FactorAnalyzer(rotation=None)
+# обучаем модель
+fa.fit(expert_features)
+# получаем eigenvalues
+eigen_values_exp, vectors_exp = fa.get_eigenvalues()
+
+# расчёт факторных нагрузок
+# создаем модель с 3 факторами
+fa = FactorAnalyzer(
+    n_factors=3,
+    rotation='varimax'
+)
+# обучаем модель
+fa.fit(expert_features)
+
+# получаем факторные нагрузки
+loadings = pd.DataFrame(
+    fa.loadings_,
+    index=expert_features.columns,
+    columns=['Factor1', 'Factor2', 'Factor3']
+)
+
+
 if __name__ == "__main__":
-    print(expert_features)
+    # print(expert_features)
+    # print("Проверка критерия Бартлетта:")
+    # print("хи-квадрат:", hi_square_value)
+    # print("p-value:", p_value)
+    # print("Проверка КМО:")
+    # print(kmo_model)
+    # print(f"КМО для каждого: {kmo_all}")
+    print(eigen_values_exp)
+    print(loadings)

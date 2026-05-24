@@ -1,5 +1,7 @@
 import matplotlib.pyplot as plt
 from factor_analysis1 import eigen_values
+from factor_analysis2 import eigen_values_exp
+
 
 # gender_counts = df["Пол"].value_counts()
 #
@@ -58,11 +60,30 @@ from factor_analysis1 import eigen_values
 
 # ________________факторный анализ объектов_____________
 
+# plt.figure(figsize=(8, 5))
+#
+# plt.plot(
+#     range(1, len(eigen_values) + 1),
+#     eigen_values,
+#     marker='o'
+# )
+#
+# plt.axhline(y=1, linestyle='--')
+#
+# plt.xlabel("Номер фактора")
+# plt.ylabel("Собственное значение")
+# plt.title("График каменистой осыпи (Scree Plot)")
+#
+# plt.grid()
+#
+# plt.show()
+# ________________FA характеристик экспертов_____________
+
 plt.figure(figsize=(8, 5))
 
 plt.plot(
-    range(1, len(eigen_values) + 1),
-    eigen_values,
+    range(1, len(eigen_values_exp) + 1),
+    eigen_values_exp,
     marker='o'
 )
 
